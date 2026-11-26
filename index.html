@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Le point de bascule</title>
+<style>
+:root{--bg:#f3ead8;--fg:#1d2b27;--gr:#26403a;--tan:#b98b63;--tl:#ecdccb;--go:#c99700;--ok:#2f8f5b;--bad:#b3402f;--card:#fbf5e8;--line:#d9ccb3}
+@media(prefers-color-scheme:dark){:root{--bg:#141c19;--fg:#e6ede9;--gr:#7fb3a3;--tl:#3a2f26;--card:#1e2926;--line:#34443f}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif}
+h1,h2,h3{margin:0 0 .4em;line-height:1.15}h1{font-size:1.5rem}h2{font-size:1.15rem}
+.wrap{max-width:1200px;margin:0 auto;padding:14px}
+.bar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;background:var(--gr);color:#fff;padding:12px 16px;border-radius:10px}
+.bar b{font-size:1.4rem;letter-spacing:.15em}.bar small{opacity:.85}
+button{font:inherit;cursor:pointer;border:0;border-radius:8px;padding:10px 16px;background:var(--tan);color:#fff;font-weight:700}
+button.alt{background:transparent;border:2px solid currentColor;color:inherit}button:disabled{opacity:.4;cursor:default}
+button:focus-visible,input:focus-visible{outline:3px solid var(--go);outline-offset:2px}
+.grid{display:grid;grid-template-columns:minmax(0,3fr) minmax(0,2fr);gap:14px;margin-top:14px}
+@media(max-width:820px){.grid{grid-template-columns:1fr}}
+.box{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px}
+.kpi{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px}.kpi div{flex:1;min-width:110px;padding:8px 10px;border-left:4px solid var(--gr)}
+.kpi strong{display:block;font-size:1.6rem}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
+.c{border:2px solid var(--line);border-radius:10px;overflow:hidden;background:var(--card);text-align:left;padding:0;color:inherit;font-weight:400;display:block;width:100%}
+.c .t{padding:8px 10px;color:#fff;font-weight:700;background:var(--tan)}.c.col .t{background:var(--gr)}
+.c .b{padding:8px 10px;font-size:.92rem}.c .f{padding:6px 10px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:6px;font-size:.9rem}
+.c.on{border-color:var(--go);box-shadow:0 0 0 3px var(--go)}.c.off{opacity:.45}
+.cost{font-weight:700;color:var(--tan)}.col .cost{color:var(--gr)}
+.who{font-size:.8rem;opacity:.85}.pill{display:inline-block;background:var(--tl);border-radius:99px;padding:1px 8px;margin:1px;font-size:.8rem}
+.meter{height:12px;background:var(--line);border-radius:6px;overflow:hidden;margin:6px 0}.meter i{display:block;height:100%;background:var(--go)}
+input{font:inherit;padding:10px;border:2px solid var(--line);border-radius:8px;width:100%;background:var(--card);color:var(--fg);margin:4px 0 10px}
+.big{font-size:2.2rem;font-weight:800}.win{color:var(--ok)}.lose{color:var(--bad)}
+svg text{fill:var(--fg);font-size:11px}
+h1,h2,.bar b,.big{font-family:Georgia,"Iowan Old Style","Times New Roman",serif}
+.box,.bar{box-shadow:4px 4px 0 rgba(38,64,58,.16)}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.07;z-index:5;background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+.scene{position:relative;aspect-ratio:16/6;overflow:hidden;border-radius:8px;margin-bottom:10px;background:var(--line)}
+.scene img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 58%;opacity:0;transition:opacity 1.6s}.scene img.on{opacity:1}
+.art{display:block;width:100%;height:92px;object-fit:cover;background:#f3ead8}
+.ban{display:block;width:100%;height:90px;object-fit:cover;object-position:center 58%;border-radius:8px;margin-top:10px}
+.c.sel{border-color:#e8604c;box-shadow:0 0 0 4px #e8604c}.c.on .t{background:var(--go)}
+.mini{margin:12px 2px;font-size:.95rem}.cards.big{grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}.big .t{font-size:1.1rem}
+select{font:inherit;padding:6px;border-radius:6px}
+.lic{max-width:1200px;margin:6px auto 26px;padding:0 14px;font-size:.8rem;opacity:.85;display:flex;gap:8px;align-items:center}.lic a{color:inherit}
+</style></head><body><div class="wrap" id="app"></div>
+<footer class="lic"><svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10" fill="none" stroke="currentColor" stroke-width="1.5"/><text x="11" y="14.6" text-anchor="middle" font-size="9" font-weight="700" fill="currentColor" font-family="Arial,sans-serif">cc</text></svg><span>© M. Scansetti · <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.fr" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a> · Jeu inspiré de <i>2tonnes World Workshop</i> (2tonnes.org)</span></footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/dist/umd/supabase.js"></script>
+<script>
+// ===== Configuration : à remplir avec votre projet Supabase (Project Settings > API). Vide = mode démo local (onglets du même navigateur).
+const SB_URL='https://kdrranzflcglaziwgtut.supabase.co', SB_KEY='sb_publishable_GgXZdy6igYMO9qhK_gobgw_GFc_QvnJ'; // SB_URL : https://xxxx.supabase.co   SB_KEY : clé « publishable » (sb_publishable_...)
+// ===== Paramètres du jeu (valeurs de départ à ajuster)
+const FR=8.2, WORLD=6.4, TARGET=2, HEARTS=8, COINS=3 /* = 3 Md€ */, PUB=1.5 /* socle services publics, t */, ROUNDS=8, BASE=.7 /* adhésion sociale de départ */;
+// Cartes individuelles : [id, titre, objectif, coût ♥, effet t/pers. (estimation à valider), rejouable, influence]
+// Cartes collectives : [id, titre, objectif, coût en Md€ (1 pièce $ = 1 Md€), effet t/pers., bonus d'adhésion, part de l'effet sur le socle public (0–1)]
+const IND=[
+[1,'Régime flexitarien','Viande et poisson 2 fois par semaine maximum',4,.5],
+[2,'Remplacer la viande rouge','Toute la viande rouge remplacée par de la viande blanche',2,.25],
+[3,"Moins d'œufs et de produits laitiers",'2 fois moins',1,.15],
+[4,'Manger local','Distances de fret réduites de 90 %',1,.1],
+[5,'Manger bio','Au moins 50 % d’aliments bio',2,.05],
+[6,"Moins d'emballages",'2 fois moins d’emballages',2,.05],
+[7,'Réduire ses déchets alimentaires','50 % de gaspillage en moins',2,.1,1],
+[8,'Moins de boissons','2 fois moins (hors eau fraîche)',3,.1],
+[9,'Se former','Lire un livre ou suivre un MOOC',1,0,1,1],
+[10,'Sensibiliser son entourage','Débattre avec un ami, un collègue, un parent',1,0,1,1],
+[11,'Réseaux sociaux','Informer et commenter sur le climat',1,0,1,1]];
+const COL=[
+[12,'Réduire les pertes alimentaires','Diviser par 2 les pertes dans chaque pays',.5,.1],
+[13,'Pratiques agricoles durables','Moins d’engrais et d’émissions liées aux animaux',2,.2],
+[14,'Riziculture efficiente','Rizières très efficientes : de 20 % à 60 %',.5,.01],
+[15,'Préservation des espaces naturels','Fin de la destruction liée à l’expansion agricole',2,.15],
+[16,'Un jour sans viande par semaine','Partout dans le monde',.5,.2],
+[59,'Étendre les plans éducatifs','Éducation des filles et climat dans le supérieur',.5,0,.1]];
+const DECKS={1:{ind:IND,col:COL}};
+if(location.hash==='#test')for(let r=2;r<=ROUNDS;r++)DECKS[r]={ind:IND.map(d=>[d[0]+100*(r-1),...d.slice(1)]),col:COL.map(d=>[d[0]+100*(r-1),...d.slice(1)])}; // test : le tour 1 est répété 8 fois // tours suivants : ajouter ici les cartes des autres catégories
+
+const $=s=>document.querySelector(s),app=$('#app'),r2=x=>Math.round(x*100)/100;
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const n1=x=>(+x).toFixed(1).replace('.',','),n2=x=>(+x).toFixed(2).replace('.',',');
+const rid=l=>Array.from({length:l},()=>'ABCDEFGHJKMNPQRSTUVWXYZ23456789'[Math.random()*31|0]).join('');
+const isT=location.hash==='#prof',TEST=location.hash==='#test';let bus,S,troot,tsel=0;
+
+function makeBus(room,on){
+  if(TEST){(window.hub=window.hub||[]).push(on);return{send:m=>window.hub.slice().forEach(f=>f(m))}}
+  if(SB_URL&&window.supabase){
+    const ch=supabase.createClient(SB_URL,SB_KEY).channel('t2-'+room,{config:{broadcast:{self:true}}});
+    ch.on('broadcast',{event:'m'},p=>on(p.payload)).subscribe();
+    return{send:m=>ch.send({type:'broadcast',event:'m',payload:m})};
+  }
+  const bc=new BroadcastChannel('t2-'+room);bc.onmessage=e=>on(e.data);
+  return{send:m=>{bc.postMessage(m);on(m)}};
+}
+const find=(a,id)=>a.find(d=>d[0]==id);
+const CATS={alimentation:[1,2,3,4,5,6,7,8,12,13,14,15,16],education:[9,10,11,59]}; // à compléter avec les autres catégories
+const back=id=>id<1000?`<img src="assets/back-${id%100}.webp" alt="" style="width:100%;border-radius:8px;display:block" onerror="this.remove()">`:'';
+const art=id=>{const k=Object.keys(CATS).find(c=>id<1000&&CATS[c].includes(id%100));return k?`<img class="art" src="assets/cat-${k}.webp" alt="" loading="lazy">`:''};
+const stageOf=X=>{const v=Object.values(X.st).map(s=>s.fp);if(!v.length)return 0;const a=v.reduce((x,y)=>x+y,0)/v.length,s0=X.hist.length?X.hist[0]:a,p=s0>TARGET?Math.min(1,Math.max(0,(s0-a)/(s0-TARGET))):1;return Math.min(4,Math.floor(p*5))};
+let sceneEl;const scene=()=>sceneEl||(sceneEl=Object.assign(document.createElement('div'),{className:'scene',innerHTML:[1,2,3,4,5].map(i=>`<img src="assets/paysage-${i}.webp" alt="">`).join('')}));
+const eu=x=>String(x).replace('.',',')+' Md€',cols=X=>((DECKS[X.round]||DECKS[1]).col).concat(X.custom||[]);
+const avg=()=>{const v=Object.values(S.st).map(s=>s.fp);return v.length?r2(v.reduce((a,b)=>a+b,0)/v.length):0};
+
+// ===== Enseignant : détient l'état, les élèves envoient leurs choix
+function save(){if(!TEST)localStorage.setItem('t2-S',JSON.stringify(S))}
+function bcast(){save();bus.send({t:'state',s:S});T()}
+function newGame(){S={room:rid(4),phase:'lobby',round:0,st:{},hist:[],used:[],ret:[],base:BASE,adopt:BASE,share:0,custom:[],vpe:3,left:COINS,t0:0};save()}
+function onT(m){
+  if(m.t==='join'){const o=S.st[m.id];S.st[m.id]=o?{...o,name:m.name,on:true}:{name:m.name,fp:m.fp,pub:Math.min(PUB,m.fp),picks:[],used:[],votes:[],on:true}}
+  else if(m.t==='pick'&&S.phase==='ind'&&S.st[m.id]){
+    const d=DECKS[S.round].ind,s=S.st[m.id],ids=[...new Set(m.cards)].filter(c=>find(d,c)&&(find(d,c)[5]||!s.used.includes(c)));
+    if(ids.reduce((a,c)=>a+find(d,c)[3],0)<=HEARTS)s.picks=ids}
+  else if(m.t==='vote'&&S.phase==='col'&&S.st[m.id]){
+    const ok=[...new Set(m.cards)].filter(c=>{const d=find(cols(S),c);return d&&!S.used.includes(c)&&d[3]<=S.left});
+    if(ok.length<=S.vpe)S.st[m.id].votes=ok}
+  else if(m.t==='claim'&&S.st[m.id]&&!S.st[m.id].on)S.st[m.id].on=true;
+  else if(m.t==='hello'){}
+  else return;
+  bcast();
+}
+function tally(){const t={};Object.values(S.st).forEach(s=>(s.votes||[]).forEach(c=>(t[c]=t[c]||[]).push(s.name)));return t}
+function validate(c){
+  const d=find(cols(S),c),e=r2(d[4]*S.adopt),all=Object.values(S.st);
+  all.forEach(s=>{s.pub=Math.max(0,r2(s.pub-e*(d[6]||0)));s.fp=Math.max(s.pub,r2(s.fp-e));s.votes=S.vpe===1?[]:s.votes.filter(x=>x!==c)});
+  S.base=Math.min(.95,r2(S.base+(d[5]||0)));S.used.push(c);S.ret.push(c);S.left=r2(S.left-d[3]);tsel=0;
+  if(!cols(S).some(x=>!S.used.includes(x[0])&&x[3]<=S.left))return endCol();
+  bcast();
+}
+function endCol(){S.hist.push(avg());S.phase=DECKS[S.round+1]?'bilan':'fin';tsel=0;bcast()}
+function exportGame(){
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(S)],{type:'application/json'}));
+  a.download='point-de-bascule_tour'+S.round+'_'+new Date().toISOString().slice(0,10)+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1500);
+}
+function importGame(o){
+  if(!o||!o.st||!o.hist)throw new Error('format');
+  S=o;S.back=S.phase==='resume'?(S.back||'ind'):S.phase;S.room=rid(4);S.phase='resume';S.vpe=S.vpe||3;tsel=0;
+  Object.values(S.st).forEach(s=>{s.on=false;s.votes=s.votes||[]});
+  bus=makeBus(S.room,onT);bcast();
+}
+function next(){
+  const ids=Object.keys(S.st),D=DECKS[S.round]||{};
+  if(S.phase==='lobby'&&ids.length){S.hist=[avg()];S.round=1;S.phase='ind'}
+  else if(S.phase==='ind'){
+    ids.forEach(i=>{const s=S.st[i];s.picks.forEach(c=>{const d=find(D.ind,c);s.fp=Math.max(s.pub,r2(s.fp-d[4]));if(!d[5])s.used.push(c)});s.inf=s.picks.some(c=>find(D.ind,c)[6]);s.picks=[]});
+    S.share=ids.length?ids.filter(i=>S.st[i].inf).length/ids.length:0;S.adopt=r2(S.base+(1-S.base)*S.share);S.ret=[];S.t0=Date.now();
+    const pool=cols(S).map(d=>d[0]).sort(()=>Math.random()-.5);ids.forEach((i,k)=>S.st[i].defend=pool[k%pool.length]);S.phase='pres'}
+  else if(S.phase==='pres'){S.left=COINS;ids.forEach(i=>S.st[i].votes=[]);S.phase='col'}
+  else if(S.phase==='col')return endCol();
+  else if(S.phase==='resume'){S.phase=S.back||'ind';delete S.back;if(S.phase==='pres')S.t0=Date.now()}
+  else if(S.phase==='bilan'){S.round++;S.custom=[];S.phase='ind'}
+  else return;
+  bcast();
+}
+function chart(h,st){
+  const W=560,H=270,L=34,B=28,top=12,n=Math.max(h.length,2),mx=Math.max(FR+1,...h,...st.map(s=>s.fp)),
+  X=i=>L+i*(W-L-14)/(n-1),Y=v=>top+(H-top-B)*(1-v/mx);
+  const line=(v,c,l)=>`<line x1="${L}" x2="${W-14}" y1="${Y(v)}" y2="${Y(v)}" stroke="${c}" stroke-dasharray="5 4"/><text x="${W-16}" y="${Y(v)-4}" text-anchor="end">${l}</text>`;
+  const pts=h.map((v,i)=>`${X(i)},${Y(v)}`).join(' ');
+  return`<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Empreinte carbone par tour">
+  ${[0,2,4,6,8,10].filter(v=>v<=mx).map(v=>`<text x="${L-6}" y="${Y(v)+4}" text-anchor="end">${v}</text>`).join('')}
+  ${line(FR,'#b3402f','France '+n1(FR)+' t')}${line(WORLD,'#c99700','Monde '+n1(WORLD)+' t')}${line(TARGET,'#2f8f5b','Objectif '+TARGET+' t')}
+  ${h.length>1?`<polyline points="${pts}" fill="none" stroke="#26403a" stroke-width="3"/>`:''}
+  ${st.map((s,k)=>`<circle cx="${X(h.length-1)+((k%5)-2)*5}" cy="${Y(s.fp)}" r="3.5" fill="#b98b63" opacity=".8"/>`).join('')}
+  ${h.map((v,i)=>`<circle cx="${X(i)}" cy="${Y(v)}" r="5" fill="#26403a"/><text x="${X(i)}" y="${H-8}" text-anchor="middle">${i?'Tour '+i:'Départ'}</text>`).join('')}</svg>`;
+}
+function card(d,type,extra,att){
+  return`<button class="c ${type} ${extra||''}" ${att||''}>${art(d[0])}<div class="t">${esc(d[1])}</div><div class="b">${esc(d[2])}</div>
+  <div class="f"><span class="cost">${type==='col'?eu(d[3]):'♥'.repeat(d[3])}</span><span>${d[4]?'−'+n2(d[4])+' t':(type==='col'?'adhésion +'+Math.round((d[5]||0)*100)+' %':'influence')}${type==='ind'&&d[5]?' · rejouable':''}</span></div></button>`;
+}
+function T(){
+  const ids=Object.keys(S.st),st=ids.map(i=>S.st[i]),a=avg(),ok=st.filter(s=>s.fp<=TARGET).length,ph=S.phase,Q=x=>troot.querySelector(x);
+  const label={resume:'Reprendre la partie',lobby:'Démarrer le jeu',ind:'Clore les choix individuels',pres:'Passer au débat',col:'Terminer le débat',bilan:'Tour suivant',fin:'Partie terminée'}[ph];
+  const url=location.href.split('#')[0].split('?')[0];
+  const bar=`<div class="bar"><div><b style="font-size:1.2rem;letter-spacing:0">Le point de bascule</b></div><div><small>Code de la salle</small><br><b>${S.room}</b></div><div><small>Les élèves ouvrent puis saisissent le code</small><br><a href="${esc(url)}" target="_blank" rel="noopener" style="color:#fff">${esc(url)}</a></div>
+  <div>${['lobby','ind','pres'].includes(ph)?`<label><small>Votes par élève</small> <select id="vp">${[1,2,3,99].map(n=>`<option value="${n}" ${S.vpe===n?'selected':''}>${n===99?'∞':n}</option>`).join('')}</select></label> `:''}${ph==='col'&&tsel?`<button id="vd">Valider « ${esc(find(cols(S),tsel)[1])} »</button> `:''}<button id="nx" ${ph==='fin'||(ph==='lobby'&&!ids.length)?'disabled':''}>${label}</button> ${ph==='col'?'<button class="alt" id="cu">Carte maison</button> ':''}${ph!=='lobby'||ids.length?'<button class="alt" id="ex">Exporter</button> ':''}${ph==='lobby'&&!ids.length?'<button class="alt" id="im">Reprendre une partie</button><input type="file" id="imp" accept=".json" hidden> ':''}<button class="alt" id="rs">Nouvelle partie</button></div></div>`;
+  const mini=`<p class="mini">Classe <b>${n1(a)} t</b> · France ${n1(FR)} t · Monde ${n1(WORLD)} t · Objectif ${TARGET} t · Adhésion ${Math.round(S.adopt*100)} % · Budget restant <b>${eu(S.left)}</b></p>`;
+  let main='';
+  if(ph==='resume')main=`<div class="box" style="margin-top:14px"><h2>Reprise de la partie — tour ${S.round}</h2><p>Les élèves ouvrent le lien, saisissent le code <b>${S.room}</b>, puis choisissent leur nom dans la liste. Quand tout le monde est là, clique sur « Reprendre la partie ».</p><p>${ids.filter(i=>S.st[i].on).length} / ${ids.length} connectés</p>${ids.map(i=>`<span class="pill">${S.st[i].on?'✔ ':'○ '}${esc(S.st[i].name)}</span>`).join('')}</div>${mini}`;
+  else if(ph==='pres')main=`<div class="box" style="margin-top:14px"><h2>Chaque élève découvre sa carte — <span id="tm"></span></h2><p>Comprendre la carte, ses données, pourquoi elle est utile. Chacun la présentera ensuite au groupe.</p>${ids.map(i=>`<span class="pill">${esc(S.st[i].name)} → ${esc((find(cols(S),S.st[i].defend)||[0,'—'])[1])}</span>`).join('')}</div>${mini}`;
+  else if(ph==='col'){const t=tally(),mx=Math.max(0,...Object.values(t).map(x=>x.length));
+    main=`<div class="box" style="margin-top:14px"><div class="cards big">`+cols(S).map(d=>{const n=t[d[0]]||[],off=S.used.includes(d[0])||d[3]>S.left;
+      return`<div class="c col ${n.length&&n.length===mx&&!off?'on':''} ${off?'off':''} ${tsel===d[0]?'sel':''}" data-card="${d[0]}">${art(d[0])}<div class="t">${esc(d[1])}</div><div class="b">${esc(d[2])}</div><div class="f"><span class="cost">${eu(d[3])}</span><span>${d[4]?'−'+n2(d[4])+' t':'adhésion +'+Math.round((d[5]||0)*100)+' %'} · <b>${n.length}</b> voix${S.used.includes(d[0])?' · adoptée':''}</span></div><div class="b who">${n.map(esc).join(', ')}</div></div>`}).join('')+`</div></div>${mini}`}
+  else{let side='';
+    if(ph==='lobby')side=`<h2>Élèves connectés (${ids.length})</h2>`+st.map(s=>`<span class="pill">${esc(s.name)} · ${n1(s.fp)} t</span>`).join('');
+    if(ph==='ind')side=`<h2>Choix individuels</h2><p>${st.filter(s=>s.picks.length).length} / ${st.length} élèves ont validé.</p>`+st.map(s=>`<span class="pill">${s.picks.length?'✔ ':''}${esc(s.name)}</span>`).join('');
+    if(ph==='bilan'||ph==='fin')side=`<h2>Bilan du tour ${S.round}</h2><p>Mesures collectives adoptées :</p>`+(S.ret.length?S.ret.map(c=>`<p>✔ ${esc(find(cols(S),c)[1])} (−${n2(find(cols(S),c)[4]*(S.adopt||1))} t)</p>`).join(''):'<p>Aucune.</p>')+
+      (ph==='fin'?`<p class="big ${a<=TARGET?'win':'lose'}">${a<=TARGET?'La classe atteint 2 t !':'Moyenne de classe : '+n1(a)+' t'}</p><p>${ok} / ${st.length} élèves sous 2 t. ${a<=TARGET&&ok==st.length?'<b class="win">Double victoire !</b>':''}</p><p class="who">Cartes des autres catégories à ajouter pour poursuivre jusqu’en 2050.</p>`:'');
+    main=`<div class="grid"><div class="box"><div id="sh"></div><div class="kpi"><div><small>Moyenne de la classe</small><strong>${n1(a)} t</strong></div><div><small>Élèves sous ${TARGET} t</small><strong>${ok} / ${st.length}</strong></div><div><small>Tour</small><strong>${S.round||'—'} / ${ROUNDS}</strong></div><div><small>Adhésion sociale</small><strong>${Math.round((ph==='lobby'?S.base:S.adopt)*100)} %</strong></div><div><small>Socle public (moy.)</small><strong>${n1(st.length?st.reduce((x,s)=>x+s.pub,0)/st.length:PUB)} t</strong></div></div>${chart(S.hist.length?S.hist:[a],st)}</div><div class="box">${side}</div></div>`}
+  troot.innerHTML=bar+main;
+  const sh=Q('#sh');if(sh){const sc=scene();sh.replaceWith(sc);const k=stageOf(S);[...sc.querySelectorAll('img')].forEach((e,i)=>e.classList.toggle('on',i===k))}
+  Q('#nx').onclick=next;Q('#rs').onclick=()=>{if(TEST){location.reload();return}if(confirm('Effacer la partie en cours ?')){newGame();bus=makeBus(S.room,onT);bcast()}};
+  const cu=Q('#cu');if(cu)cu.onclick=()=>{const n=prompt('Nom de la carte proposée par la classe ?');if(!n)return;const c=parseFloat((prompt('Coût en Md€ ?','1')||'').replace(',','.')),e=parseFloat((prompt('Effet en tCO2e par personne ?','0.1')||'').replace(',','.'));if(!(c>0)||!(e>=0))return;S.custom.push([1000*S.round+900+S.custom.length,n,'Carte proposée par la classe',c,e,0]);bcast()};
+  const vd=Q('#vd');if(vd)vd.onclick=()=>validate(tsel);
+  const ex=Q('#ex');if(ex)ex.onclick=exportGame;
+  const im=Q('#im'),imp=Q('#imp');if(im){im.onclick=()=>imp.click();imp.onchange=e=>{const f=e.target.files[0];if(f)f.text().then(t=>{try{importGame(JSON.parse(t))}catch(x){alert('Fichier non valide.')}})}}
+  const vp=Q('#vp');if(vp)vp.onchange=()=>{S.vpe=+vp.value;bcast()};
+  troot.onclick=e=>{const c=e.target.closest('[data-card]');if(!c||S.phase!=='col')return;const id=+c.dataset.card,d=find(cols(S),id);if(d&&!S.used.includes(id)&&d[3]<=S.left){tsel=tsel===id?0:id;T()}};
+}
+
+// ===== Élève : une instance par élève (plusieurs sur la même page en mode test)
+function q(k){return new URLSearchParams(location.search).get(k)}
+function mkStudent(root,pre){
+  let sb,P,me=pre||null,sel=[],key='',room='',showNew=0,declined=0;const R=s=>root.querySelector(s);
+  const sendJoin=()=>sb.send({t:'join',id:me.id,name:me.name,fp:me.fp});
+  function onS(m){
+    if(m.t!=='state')return;P=m.s;if(me&&!P.st[me.id]){if(P.phase==='resume')me=null;else sendJoin()}
+    const k=P.round+P.phase;if(k!==key){key=k;sel=((me&&P.st[me.id])||{}).picks||[]}
+    St();
+  }
+  function St(){
+    if(!me){
+      const HD='<div class="box" style="max-width:460px;margin:20px auto"><img class="ban" src="assets/paysage-1.webp" alt="" style="height:120px;margin:0 0 10px"><h1>Le point de bascule</h1>',old=JSON.parse(localStorage.getItem('t2-me')||'null');
+      if(!sb){
+        if(old&&!declined){root.innerHTML=`${HD}<p>Tu étais <b>${esc(old.name)}</b> dans la salle <b>${esc(old.room)}</b>.</p><button id="rp">Reprendre</button> <button class="alt" id="ch" style="color:var(--fg)">Changer de salle</button></div>`;
+          R('#rp').onclick=()=>{me={id:old.id,name:old.name,fp:old.fp};connect(old.room)};R('#ch').onclick=()=>{declined=1;localStorage.removeItem('t2-me');St()};return}
+        root.innerHTML=`${HD}<p>Calcule ton empreinte carbone sur <a href="https://nosgestesclimat.fr" target="_blank" rel="noopener">nosgestesclimat.fr</a>, puis entre le code affiché sur l’écran de l’enseignant.</p><label>Code de la salle<input id="jr" value="${esc(q('r')||'')}" maxlength="4" autocapitalize="characters"></label><button id="jb">Entrer</button><p><small>Pour tout tester sur une seule page : <a href="#test">mode test</a>.</small></p></div>`;
+        R('#jb').onclick=()=>{const c=R('#jr').value.trim().toUpperCase();if(c.length!==4){alert('Le code (4 caractères) est affiché en haut de l’écran de l’enseignant.');return}connect(c)};return}
+      if(!P){root.innerHTML='<div class="box" style="padding:0;overflow:hidden"><img src="assets/attente.webp" alt="Connexion…" style="display:block;width:100%"></div>';return}
+      if(P.phase==='resume'&&!showNew){root.innerHTML=`${HD}<p>La partie reprend. Qui es-tu ?</p>`+Object.entries(P.st).filter(([i,s])=>!s.on).map(([i,s])=>`<button data-claim="${i}" style="display:block;width:100%;margin:4px 0">${esc(s.name)}</button>`).join('')+`<p><button class="alt" id="nw" style="color:var(--fg)">Je suis nouveau</button></p></div>`;
+        root.querySelectorAll('[data-claim]').forEach(x=>x.onclick=()=>{const id=x.dataset.claim,s=P.st[id];me={id,name:s.name,fp:s.fp};localStorage.setItem('t2-me',JSON.stringify({...me,room}));sb.send({t:'claim',id});St()});
+        R('#nw').onclick=()=>{showNew=1;St()};return}
+      root.innerHTML=`${HD}<p>Choisis un pseudo (pas de nom réel) et indique l’empreinte calculée.</p><label>Pseudo<input id="jn" maxlength="16"></label><label>Mon empreinte (tonnes CO₂e par an)<input id="jf" type="number" step="0.1" min="1" max="40" inputmode="decimal"></label><button id="jb">Rejoindre</button></div>`;
+      R('#jb').onclick=()=>{const name=R('#jn').value.trim(),fp=parseFloat(R('#jf').value.replace(',','.'));if(!name){alert('Choisis un pseudo.');return}if(!(fp>=1&&fp<=40)){alert('Indique ton empreinte, entre 1 et 40 tonnes.');return}me={id:rid(8),name,fp};localStorage.setItem('t2-me',JSON.stringify({...me,room}));sendJoin();St()};return}
+    if(!P){root.innerHTML='<div class="box" style="padding:0;overflow:hidden"><img src="assets/attente.webp" alt="Connexion à la salle…" style="display:block;width:100%"></div>';return}
+    const mine=P.st[me.id]||{fp:me.fp,picks:[],used:[]},D=DECKS[P.round]||DECKS[1],head=`<div class="bar"><div><b>${esc(me.name)}</b><br><small>Mon empreinte</small> <b>${n1(mine.fp)} t</b><br><small>dont socle public ${n1(mine.pub??Math.min(PUB,me.fp))} t, réductible seulement par les mesures collectives</small></div><div><small>Classe</small> <b>${n1(P.hist.length?P.hist[P.hist.length-1]:me.fp)} t</b> · <small>objectif ${TARGET} t</small></div></div>`;
+    let body='';
+    if(P.phase==='lobby'||P.phase==='resume')body='<div class="box" style="padding:0;overflow:hidden"><img src="assets/attente.webp" alt="En attente du début de la partie" style="display:block;width:100%"></div>';
+    if(P.phase==='ind'){const spent=sel.reduce((a,c)=>a+find(D.ind,c)[3],0);
+      body=`<div class="box"><h2>Mes choix individuels — ${HEARTS-spent} ♥ restants</h2><div class="meter"><i style="width:${spent/HEARTS*100}%"></i></div><div class="cards">`+
+      D.ind.map(d=>{const on=sel.includes(d[0]),dead=!d[5]&&mine.used.includes(d[0]),no=!on&&(dead||spent+d[3]>HEARTS);return card(d,'ind',(on?'on ':'')+(no?'off':''),`data-a="tog" data-id="${d[0]}" ${no?'disabled':''}`)}).join('')+
+      `</div><p><button id="ok">Valider mes choix</button> ${(mine.picks.length&&sel.join()===mine.picks.join())?'✔ envoyé':''}</p></div>`}
+    if(P.phase==='pres'){const d=find(cols(P),mine.defend);
+      body=d?`<div class="box"><h2>Ta carte à défendre</h2><h2 style="color:var(--gr)">${esc(d[1])}</h2><p>${esc(d[2])} · <b>${eu(d[3])}</b></p>${back(d[0])}<p class="who">Comprends la carte et ses données : tu vas la présenter et la défendre devant le groupe.</p></div>`:'<div class="box"><p>Écoute les présentations de la classe.</p></div>'}
+    if(P.phase==='col'){const mv=mine.votes||[],left=P.left;
+      body=`<div class="box"><h2>Débat — budget restant ${eu(left)} · ${P.vpe>=99?'votes illimités':(P.vpe-mv.length)+' vote(s) restant(s)'}</h2><div class="cards">`+
+      cols(P).map(d=>{const dead=P.used.includes(d[0])||(d[3]>left&&!mv.includes(d[0])),t=Object.values(P.st).filter(s=>(s.votes||[]).includes(d[0])).length;
+        return card(d,'col',(mv.includes(d[0])?'on ':'')+(dead?'off':''),`data-a="vote" data-id="${d[0]}" ${dead?'disabled':''}`).replace('</span></div></button>',` · ${t} voix</span></div></button>`)}).join('')+'</div></div>'}
+    if(P.phase==='bilan'||P.phase==='fin')body=`<div class="box"><h2>Bilan du tour ${P.round}</h2><p class="big ${mine.fp<=TARGET?'win':''}">${n1(mine.fp)} t</p><p>${mine.fp<=TARGET?'Tu es sous 2 t !':'Encore '+n1(mine.fp-TARGET)+' t à gagner pour atteindre 2 t.'}</p></div>`;
+    root.innerHTML=head+`<img class="ban" src="assets/paysage-${stageOf(P)+1}.webp" alt=""><div style="margin-top:12px">${body}</div>`;
+  }
+  function connect(r){room=r;sb=makeBus(r,onS);if(me)sendJoin();else sb.send({t:'hello'});St()}
+  root.addEventListener('click',e=>{
+    const b=e.target.closest('button');if(!b||!me||!sb)return;
+    if(b.dataset.a==='tog'){const id=+b.dataset.id;sel=sel.includes(id)?sel.filter(x=>x!==id):[...sel,id];St()}
+    if(b.dataset.a==='vote'){const id=+b.dataset.id,mv=(P.st[me.id]||{}).votes||[];let n=mv.includes(id)?mv.filter(x=>x!==id):[...mv,id];if(P.vpe===1&&n.length>1)n=[id];if(n.length>P.vpe)return;sb.send({t:'vote',id:me.id,cards:n})}
+    if(b.id==='ok')sb.send({t:'pick',id:me.id,cards:sel});
+  });
+  // joue au hasard (mode test)
+  function auto(){
+    if(!P||!P.st[me.id])return;const mine=P.st[me.id],D=DECKS[P.round]||DECKS[1];
+    if(P.phase==='ind'){let left=HEARTS;const c=[];[...D.ind].sort(()=>Math.random()-.5).forEach(d=>{if(d[3]<=left&&(d[5]||!mine.used.includes(d[0]))&&Math.random()<.7){c.push(d[0]);left-=d[3]}});sel=c;sb.send({t:'pick',id:me.id,cards:c})}
+    if(P.phase==='col'){const c=cols(P).filter(d=>!P.used.includes(d[0])&&d[3]<=P.left).sort(()=>Math.random()-.5).slice(0,Math.min(P.vpe,2));sb.send({t:'vote',id:me.id,cards:c.map(d=>d[0])})}
+  }
+  if(pre)connect(pre.room);else St();
+  return{auto};
+}
+
+// ===== Démarrage
+setInterval(()=>{const e=document.getElementById('tm');if(e&&S&&S.phase==='pres'){const r=Math.max(0,120-Math.floor((Date.now()-S.t0)/1000));e.textContent=Math.floor(r/60)+':'+String(r%60).padStart(2,'0')}},1000);
+addEventListener('hashchange',()=>location.reload());
+if(TEST){
+  newGame();
+  app.innerHTML=`<div id="tb"></div><div class="box" style="margin-top:14px"><button id="add">+ Un élève</button> <button id="add5" class="alt">+ 5 élèves</button> <button id="aut" class="alt">Faire jouer tous les élèves au hasard</button><p class="who">Mode test : tout se passe sur cette page, rien n’est envoyé en ligne. Les élèves sont en bas ; clique sur « Démarrer le jeu » en haut quand tu en as ajouté.</p></div><div id="sts" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:12px;margin-top:14px"></div>`;
+  troot=$('#tb');bus=makeBus(S.room,onT);T();
+  const studs=[],add=()=>{const d=document.createElement('div');d.style.cssText='max-height:560px;overflow:auto';$('#sts').append(d);
+    studs.push(mkStudent(d,{id:rid(8),name:'Élève '+(studs.length+1),fp:r2(7+Math.random()*3),room:S.room}))};
+  $('#add').onclick=add;$('#add5').onclick=()=>{for(let i=0;i<5;i++)add()};$('#aut').onclick=()=>studs.forEach(x=>x.auto());
+  for(let i=0;i<3;i++)add();
+}else if(isT){
+  S=JSON.parse(localStorage.getItem('t2-S')||'null');if(!S)newGame();S.vpe=S.vpe||3;if(S.left==null)S.left=COINS;Object.values(S.st).forEach(x=>x.votes=x.votes||[]);
+  troot=app;bus=makeBus(S.room,onT);bus.send({t:'state',s:S});T();
+}else mkStudent(app);
+</script></body></html>
