@@ -23,6 +23,7 @@ button:focus-visible,input:focus-visible{outline:3px solid var(--go);outline-off
 .c .t{padding:8px 10px;color:#fff;font-weight:700;background:var(--tan)}.c.col .t{background:var(--gr)}
 .c .b{padding:8px 10px;font-size:.92rem}.c .f{padding:6px 10px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:6px;font-size:.9rem}
 .c .cn{font-size:.8rem;opacity:.85;padding-top:0}.c .det{padding:5px 10px;font-size:.8rem;text-decoration:underline;border-top:1px dashed var(--line);cursor:pointer}
+.lkm{color:#c0392b;font-weight:600}
 .leg{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:.78rem;margin:4px 0}.leg i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:4px}
 .car{display:flex;gap:12px;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;padding:4px 2px 12px;-webkit-overflow-scrolling:touch}.car .c{flex:0 0 82%;max-width:340px;scroll-snap-align:center}.car .c .art{max-height:24vh;object-fit:cover}
 .c.on{border-color:var(--go);box-shadow:0 0 0 3px var(--go)}.c.off{opacity:.45}
@@ -47,7 +48,7 @@ select{font:inherit;padding:6px;border-radius:6px}
 .modal{position:fixed;inset:0;background:rgba(20,28,25,.88);z-index:20;display:flex;align-items:center;justify-content:center;gap:28px;padding:14px;flex-wrap:wrap;overflow:auto}
 .modal .imgw{width:min(92vw,520px)}.modal .side{max-width:380px;color:#fff}.modal h2{color:#fff}
 </style></head><body><div class="wrap" id="app"></div>
-<footer class="lic"><svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10" fill="none" stroke="currentColor" stroke-width="1.5"/><text x="11" y="14.6" text-anchor="middle" font-size="9" font-weight="700" fill="currentColor" font-family="Arial,sans-serif">cc</text></svg><span>© M. Scansetti · <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.fr" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a> · Jeu inspiré de <i>2tonnes World Workshop</i> (2tonnes.org)</span></footer>
+<footer class="lic"><svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10" fill="none" stroke="currentColor" stroke-width="1.5"/><text x="11" y="14.6" text-anchor="middle" font-size="9" font-weight="700" fill="currentColor" font-family="Arial,sans-serif">cc</text></svg><span>© M. Scansetti · <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.fr" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a></span></footer>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/dist/umd/supabase.js"></script>
 <script>
 // ===== Configuration : à remplir avec votre projet Supabase (Project Settings > API). Vide = mode démo local (onglets du même navigateur).
@@ -103,7 +104,7 @@ const IND3=[
 [38,'Faire du lobbying auprès des décideurs','Prendre rendez-vous à la mairie',3,0,1,1],
 [39,'Investir ses finances dans des projets à faible émission carbone','Passer à une banque à faible émission carbone',2,.15]];
 const COL3=[
-[40,'Déployer le captage et le stockage du carbone dans les centrales au charbon','100 % des centrales électriques alimentées au charbon ont été améliorées grâce à cette technologie',2,.15,0,.5,'Avoir réalisé une action collective pour réduire la consommation d’électricité'],
+[40,'Déployer le captage et le stockage du carbone dans les centrales au charbon','100 % des centrales électriques alimentées au charbon ont été améliorées grâce à cette technologie',2,.15,0,.5,'Avoir réalisé une action collective pour réduire la consommation d’électricité',[[41,42]]],
 [41,'Investir dans l’efficacité énergétique de l’industrie et du tertiaire','Réduire de moitié la consommation d’énergie des secteurs tertiaire et industriel par rapport à la moyenne mondiale',1.5,.3,0,.5],
 [42,'Investir dans l’efficacité énergétique des ménages','Réduire de moitié la consommation d’énergie pour le chauffage ou la climatisation par rapport à la moyenne mondiale',1,.3,0,.3],
 [43,'Réfrigération à faible teneur en carbone','Réduire de moitié les fuites de GES de synthèse',.5,.1,0,.3],
@@ -120,17 +121,21 @@ const IND4=[
 const COL4=[
 [53,'Investir dans l’approvisionnement en énergie des secteurs tertiaire et industriel','85 % de l’énergie des secteurs tertiaire et industriel est électrique ou produite par un système énergétique à faible impact carbone',1.5,.25,0,.5,'Avoir mené une action collective pour réduire la consommation d’énergie des secteurs tertiaire et industriel',[41]],
 [54,'Investir dans l’approvisionnement énergétique des ménages','85 % de l’énergie des ménages est électrique ou produite par un système énergétique individuel à faible impact carbone',2,.25,0,.3,'Avoir réalisé une action collective pour réduire la consommation d’énergie du ménage',[42]],
-[55,'Décarboner le mix de production d’électricité : étape 1','50 % du mix de production d’électricité est produit par des sources renouvelables',2,.35,0,.6,'Avoir réalisé une action collective pour réduire la consommation d’électricité'],
+[55,'Décarboner le mix de production d’électricité : étape 1','50 % du mix de production d’électricité est produit par des sources renouvelables',2,.35,0,.6,'Avoir réalisé une action collective pour réduire la consommation d’électricité',[[41,42]]],
 [56,'Décarboner le mix de production d’électricité : étape 2','75 % du mix de production d’électricité est produit par des sources renouvelables',2,.35,0,.6,'Avoir choisi la carte Étape 1',[55]],
 [57,'Instaurer un « jour 2tonnes »','Réduire de 95 % la consommation et les activités économiques un jour par semaine',.5,.4,0,.3,'Avoir investi dans l’éducation',[59]],
 [58,'Imposer un quota de carbone','Fixer des limites par personne en matière de transport, d’énergie domestique et de consommation',.5,.6,0,.3,'Consensus de tous les participants']];
 const DECKS={1:{ind:IND1,col:COL1},2:{ind:IND2,col:COL2},3:{ind:IND3,col:COL3},4:{ind:IND4,col:COL4}};
-const EFF_IND=.85; // calibrage provisoire (simulations) : effets individuels × 0,8 pour que 2 t soit atteignable seulement avec un engagement quasi total
+const EFF_IND=.8; // calibrage provisoire (simulations) : effets individuels × 0,8 pour que 2 t soit atteignable seulement avec un engagement quasi total
 Object.values(DECKS).forEach(x=>x.ind.forEach(d=>{d[4]=Math.round(d[4]*EFF_IND*100)/100}));
 const IND=IND1,COL=COL1;
+const indOf=r=>{const D=DECKS[r];if(!D)return[];const a=[...D.ind];for(let k=1;k<r;k++)DECKS[k].ind.filter(d=>d[5]).forEach(d=>a.push(d));return a}; // cartes du tour + cartes rejouables des tours précédents
 const avail=x=>HEARTS+((x&&x.carry)||0); // cœurs disponibles : 8 + cœurs non dépensés des tours précédents
 const snap=v=>Math.round(v*2)/2; // budget arrondi au 0,5 Md€ le plus proche
-const lk=(d,X)=>(d[8]||[]).some(r=>!X.used.includes(r)); // carte collective verrouillée (prérequis non adopté)
+const reqOk=(r,X)=>Array.isArray(r)?r.some(x=>X.used.includes(x)):X.used.includes(r);
+const lk=(d,X)=>(d[8]||[]).some(r=>!reqOk(r,X)); // verrouillée tant qu'une carte requise (ou l'une des cartes d'un groupe) n'a pas été adoptée
+const ctitle=id=>{for(const r in DECKS){const d=find(DECKS[r].col,id);if(d)return d[1]}return'#'+id};
+const lkm=(d,X)=>{if(!lk(d,X))return'';const m=(d[8]||[]).filter(r=>!reqOk(r,X)).map(r=>Array.isArray(r)?'l’une des cartes '+r.map(x=>'« '+ctitle(x)+' »').join(' ou '):'« '+ctitle(r)+' »');return`<div class="b cn lkm">🔒 Vous n’avez pas choisi ${m.join(' et ')} dans les tours précédents !</div>`};
 const okc=(d,X)=>!X.used.includes(d[0])&&d[3]<=X.left&&!lk(d,X);
 // ----- Empreinte par catégorie (les 5 catégories de nosgestesclimat.fr)
 const KEYS=['tr','se','al','lo','co'],KL={tr:'Transport',se:'Services sociétaux',al:'Alimentation',lo:'Logement',co:'Consommation'},KC={tr:'#2f4bb8',se:'#7b2aa8',al:'#b0451a',lo:'#2f8f5b',co:'#c99700'};
@@ -176,7 +181,9 @@ const art=id=>{const k=Object.keys(CATS).find(c=>id<1000&&CATS[c].includes(id%10
 const stageOf=X=>{const v=Object.values(X.st).map(s=>s.fp);if(!v.length)return 0;const a=v.reduce((x,y)=>x+y,0)/v.length,s0=X.hist.length?X.hist[0]:a,p=s0>TARGET?Math.min(1,Math.max(0,(s0-a)/(s0-TARGET))):1;return Math.min(4,Math.floor(p*5))};
 let sceneEl;const scene=()=>sceneEl||(sceneEl=Object.assign(document.createElement('div'),{className:'scene',innerHTML:[1,2,3,4,5].map(i=>`<img src="assets/paysage-${i}.webp" alt="">`).join('')}));
 const eu=x=>String(x).replace('.',',')+' Md€',cols=X=>((DECKS[X.round]||DECKS[1]).col).concat(X.custom||[]);
-const avgc=()=>{const v=Object.values(S.st),o={};KEYS.forEach(k=>o[k]=v.length?r2b(v.reduce((a,s)=>a+s.c[k],0)/v.length):0);return o};
+const avgcX=X=>{const v=Object.values(X.st),o={};KEYS.forEach(k=>o[k]=v.length?r2b(v.reduce((a,s)=>a+s.c[k],0)/v.length):0);return o};
+const avgc=()=>avgcX(S);
+const avgcOld=()=>{const v=Object.values(S.st),o={};KEYS.forEach(k=>o[k]=v.length?r2b(v.reduce((a,s)=>a+s.c[k],0)/v.length):0);return o};
 const avg=()=>{const v=Object.values(S.st).map(s=>s.fp);return v.length?r2(v.reduce((a,b)=>a+b,0)/v.length):0};
 
 // ===== Enseignant : détient l'état, les élèves envoient leurs choix
@@ -187,7 +194,7 @@ function newGame(){S={room:rid(4),phase:'lobby',round:0,st:{},hist:[],histc:[],u
 function onT(m){
   if(m.t==='join'){const o=S.st[m.id],c=m.c&&KEYS.every(k=>m.c[k]>=0)?m.c:split(m.fp);S.st[m.id]=o?{...o,name:m.name,on:true}:{name:m.name,fp:r2b(KEYS.reduce((a,k)=>a+c[k],0)),c:{...c},c0:{...c},pub:c.se,h:S.hist.map(()=>({...c})),picks:[],used:[],votes:[],on:true}}
   else if(m.t==='pick'&&S.phase==='ind'&&S.st[m.id]){
-    const d=DECKS[S.round].ind,s=S.st[m.id],ids=[...new Set(m.cards)].filter(c=>find(d,c)&&(find(d,c)[5]||!s.used.includes(c)));
+    const d=indOf(S.round),s=S.st[m.id],ids=[...new Set(m.cards)].filter(c=>find(d,c)&&(find(d,c)[5]||!s.used.includes(c)));
     if(ids.reduce((a,c)=>a+find(d,c)[3],0)<=avail(s))s.picks=ids}
   else if(m.t==='vote'&&S.phase==='col'&&S.st[m.id]){
     const ok=[...new Set(m.cards)].filter(c=>{const d=find(cols(S),c);return d&&okc(d,S)});
@@ -201,7 +208,7 @@ function tally(){const t={};Object.values(S.st).forEach(s=>(s.votes||[]).forEach
 function validate(c){
   const d=find(cols(S),c),e=r2(d[4]*S.adopt),all=Object.values(S.st);
   all.forEach(s=>{eff(s,e,kw(d[0]),d[6]||0);s.votes=S.vpe===1?[]:s.votes.filter(x=>x!==c)});
-  S.base=Math.min(.95,r2(S.base+(d[5]||0)));S.used.push(c);S.ret.push(c);S.left=r2(S.left-d[3]);tsel=0;view=0;
+  S.base=Math.min(.95,r2(S.base+(d[5]||0)));S.used.push(c);S.ret.push(c);(S.adopted=S.adopted||[]).push({id:c,t:d[1],r:S.round});S.left=r2(S.left-d[3]);tsel=0;view=0;
   if(!cols(S).some(x=>okc(x,S)))return endCol();
   bcast();
 }
@@ -219,10 +226,11 @@ function importGame(o){
 }
 function leader(){const t=tally();let best=0,id=0,tie=false;cols(S).forEach(d=>{const n=(t[d[0]]||[]).length;if(!n||!okc(d,S))return;if(n>best){best=n;id=d[0];tie=false}else if(n===best)tie=true});return tie?0:id}
 function next(){view=0;
-  const ids=Object.keys(S.st),D=DECKS[S.round]||{};
+  const ids=Object.keys(S.st),D={...(DECKS[S.round]||{}),ind:indOf(S.round)};
   if(S.phase==='lobby'&&ids.length){S.hist=[];S.histc=[];snapshot();S.round=1;S.phase='ind'}
   else if(S.phase==='ind'){
     ids.forEach(i=>{const s=S.st[i];s.picks.forEach(c=>{const d=find(D.ind,c);eff(s,d[4],kw(d[0]),0);if(!d[5])s.used.push(c)});s.inf=s.picks.some(c=>find(D.ind,c)[6]);s.carry=r2(avail(s)-s.picks.reduce((a,c)=>a+find(D.ind,c)[3],0));s.picks=[]});
+    snapshot();
     S.share=ids.length?ids.filter(i=>S.st[i].inf).length/ids.length:0;S.infI=r2((S.infI||0)+S.share);S.budget=S.round===1?BUD0:Math.min(BUDMAX,Math.max(S.budget||BUD0,snap(BUD0+(BUDMAX-BUD0)*Math.min(1,S.infI/ROUNDS))));S.adopt=r2(S.base+(1-S.base)*S.share);S.ret=[];S.t0=Date.now();
     S.phase='pres'}
   else if(S.phase==='pres'){S.left=S.budget;ids.forEach(i=>S.st[i].votes=[]);S.phase='col'}
@@ -242,7 +250,7 @@ function chart(h,st){
   ${line(FR,'#b3402f','France '+n1(FR)+' t')}${line(WORLD,'#c99700','Monde '+n1(WORLD)+' t')}${line(TARGET,'#2f8f5b','Objectif '+TARGET+' t')}
   ${h.length>1?`<polyline points="${pts}" fill="none" stroke="#26403a" stroke-width="3"/>`:''}
   ${st.map((s,k)=>`<circle cx="${X(h.length-1)+((k%5)-2)*5}" cy="${Y(s.fp)}" r="3.5" fill="#b98b63" opacity=".8"/>`).join('')}
-  ${h.map((v,i)=>`<circle cx="${X(i)}" cy="${Y(v)}" r="5" fill="#26403a"/><text x="${X(i)}" y="${H-8}" text-anchor="middle">${i?'Tour '+i:'Départ'}</text>`).join('')}</svg>`;
+  ${h.map((v,i)=>`<circle cx="${X(i)}" cy="${Y(v)}" r="5" fill="#26403a"/><text x="${X(i)}" y="${H-8}" text-anchor="middle">${lab(i)}</text>`).join('')}</svg>`;
 }
 const tot=v=>KEYS.reduce((a,k)=>a+(v[k]||0),0);
 function stackChart(cs){
@@ -259,36 +267,38 @@ function catBars(ser){
   ${[0,1,2,3].filter(v=>v<=mx).map(v=>`<text x="${L-6}" y="${Y(v)+4}" text-anchor="end">${v}</text><line x1="${L}" x2="${W-8}" y1="${Y(v)}" y2="${Y(v)}" stroke="#8883"/>`).join('')}
   ${KEYS.map((k,i)=>{const x0=L+i*gw+gw/2-bw*ser.length/2;return ser.map((s,j)=>`<rect x="${x0+j*bw}" y="${Y(s.v[k]||0)}" width="${bw-2}" height="${Y(0)-Y(s.v[k]||0)}" fill="${s.col}"/><text x="${x0+j*bw+bw/2-1}" y="${Y(s.v[k]||0)-3}" text-anchor="middle" font-size="10">${n1(s.v[k]||0)}</text>`).join('')+`<text x="${L+i*gw+gw/2}" y="${H-B+16}" text-anchor="middle">${KL[k]}</text>`}).join('')}
   </svg><div class="leg">${ser.map(s=>`<span><i style="background:${s.col}"></i>${s.n}</span>`).join('')}</div>`}
-const lab=i=>i?'Tour '+i:'Départ';
+const YEARS=[2028,2031,2034,2037,2040,2043,2046,2050],lab=i=>i?YEARS[Math.min(i,8)-1]:'Aujourd’hui';
 const refCols=[{l:'France',v:FRC,x:1},{l:'Monde',v:WLC,x:1}];
+const withLive=(cs,cur)=>{const l=cs[cs.length-1];if(!l||KEYS.some(k=>Math.abs((l.v[k]||0)-(cur[k]||0))>.004))cs.push({l:'En cours',v:cur});return cs};
 function evoBox(){
-  const cs=S.histc.map((c,i)=>({l:lab(i),v:c}));if(!cs.length)cs.push({l:lab(0),v:avgc()});
+  const cs=withLive(S.histc.map((c,i)=>({l:lab(i),v:c})),avgc());
   return`<div class="grid" style="margin-top:14px"><div class="box"><h2>Évolution de la classe par catégorie</h2>${stackChart(cs.concat(refCols))}${legend()}</div><div class="box"><h2>Aujourd’hui, catégorie par catégorie</h2>${catBars([{n:'Classe',col:'#26403a',v:avgc()},{n:'France',col:'#b3402f',v:FRC},{n:'Monde',col:'#c99700',v:WLC}])}</div></div>`}
-function card(d,type,extra,att,note){
-  return`<button class="c ${type} ${extra||''}" ${att||''}>${art(d[0])}<div class="t">${esc(d[1])}</div><div class="b">${esc(d[2])}</div>${d[7]?`<div class="b cn">🔒 ${esc(d[7])}</div>`:''}
-  <div class="f"><span class="cost">${type==='col'?eu(d[3]):'♥'.repeat(d[3])}</span><span>${type==='ind'?[d[6]?'influence':'',d[5]?'rejouable':''].filter(Boolean).join(' · '):(lk(d,S||{used:[]})?'verrouillée':'')}${note||''}</span></div>${att?`<div class="det" data-info="${d[0]}">Voir les détails</div>`:''}</button>`;
+function card(d,type,extra,att,note,X0){const XX=X0||S||{used:[]};
+  return`<button class="c ${type} ${extra||''}" ${att||''}>${art(d[0])}<div class="t">${esc(d[1])}</div><div class="b">${esc(d[2])}</div>${d[7]?`<div class="b cn">🔒 ${esc(d[7])}</div>`:''}${lkm(d,XX)}
+  <div class="f"><span class="cost">${type==='col'?eu(d[3]):'♥'.repeat(d[3])}</span><span>${type==='ind'?[d[6]?'influence':'',d[5]?'rejouable':''].filter(Boolean).join(' · '):(lk(d,XX)?'verrouillée':'')}${note||''}</span></div>${att?`<div class="det" data-info="${d[0]}">Voir les détails</div>`:''}</button>`;
 }
 function T(){
   const ids=Object.keys(S.st),st=ids.map(i=>S.st[i]),a=avg(),ok=st.filter(s=>s.fp<=TARGET).length,ph=S.phase,Q=x=>troot.querySelector(x);
   const label={resume:'Reprendre la partie',lobby:'Démarrer le jeu',ind:'Clore les choix individuels',pres:'Passer au débat',col:'Terminer le débat',bilan:'Tour suivant',fin:'Partie terminée'}[ph];
   const url=location.href.split('#')[0].split('?')[0];
-  const bar=`<div class="bar"><div><b style="font-size:1.2rem;letter-spacing:0">Le point de bascule</b></div><div><small>Code de la salle</small><br><b>${S.room}</b></div><div><small>Les élèves ouvrent puis saisissent le code</small><br><a href="${esc(url)}" target="_blank" rel="noopener" style="color:#fff">${esc(url)}</a></div>
+  const bar=`<div class="bar"><div><b style="font-size:1.2rem;letter-spacing:0">Le point de bascule</b></div><div><small>Code de la salle</small><br><b>${S.room}</b></div>
   <div>${ph==='col'&&leader()?`<button id="vd">Valider « ${esc(find(cols(S),leader())[1])} »</button> `:''}<button id="nx" ${ph==='fin'||(ph==='lobby'&&!ids.length)?'disabled':''}>${label}</button> ${ph==='col'?'<button class="alt" id="cu">Carte maison</button> ':''}${ph!=='lobby'||ids.length?'<button class="alt" id="ex">Exporter</button> ':''}${ph==='lobby'&&!ids.length?'<button class="alt" id="im">Reprendre une partie</button><input type="file" id="imp" accept=".json" hidden> ':''}<button class="alt" id="rs">Nouvelle partie</button></div></div>`;
   const mini=`<p class="mini">Classe <b>${n1(a)} t</b> · France ${n1(FR)} t · Monde ${n1(WORLD)} t · Objectif ${TARGET} t · Adhésion ${Math.round(S.adopt*100)} % · Budget du tour <b>${eu(S.budget||BUD0)}</b>${ph==='col'?` · restant <b>${eu(S.left)}</b>`:''} · Influence cumulée ${Math.round((S.infI||0)/ROUNDS*100)} %</p>`;
   let main='';
   if(ph==='resume')main=`<div class="box" style="margin-top:14px"><h2>Reprise de la partie — tour ${S.round}</h2><p>Les élèves ouvrent le lien, saisissent le code <b>${S.room}</b>, puis choisissent leur nom dans la liste. Quand tout le monde est là, clique sur « Reprendre la partie ».</p><p>${ids.filter(i=>S.st[i].on).length} / ${ids.length} connectés</p>${ids.map(i=>`<span class="pill">${S.st[i].on?'✔ ':'○ '}${esc(S.st[i].name)}</span>`).join('')}</div>${mini}`;
-  else if(ph==='pres')main=`<div class="box" style="margin-top:14px"><h2>Les élèves parcourent toutes les cartes sur leur téléphone — <span id="tm"></span></h2><p><label>Durée <input id="dur" type="number" min="0.5" step="0.5" value="${S.dur/60}" style="width:80px;display:inline-block;margin:0"> min</label> <button class="alt" id="rt">Relancer le chrono</button></p><p class="who">Chaque élève peut faire défiler les cartes et ouvrir leurs données.</p></div><div class="box" style="margin-top:14px"><h2>Cartes du tour — clique sur une carte pour projeter ses données</h2><div class="cards big">${cols(S).map(d=>`<div class="c col" data-card="${d[0]}">${art(d[0])}<div class="t">${esc(d[1])}</div><div class="b">${esc(d[2])}</div><div class="f"><span class="cost">${eu(d[3])}</span><span>${lk(d,S)?'verrouillée':''}</span></div>${d[7]?`<div class="b cn">🔒 ${esc(d[7])}</div>`:''}</div>`).join('')}</div></div>${mini}`;
+  else if(ph==='pres')main=`<div class="box" style="margin-top:14px"><h2>Les élèves parcourent toutes les cartes sur leur téléphone — <span id="tm"></span></h2><p><label>Durée <input id="dur" type="number" min="0.5" step="0.5" value="${S.dur/60}" style="width:80px;display:inline-block;margin:0"> min</label> <button class="alt" id="rt">Relancer le chrono</button></p><p class="who">Chaque élève peut faire défiler les cartes et ouvrir leurs données.</p></div><div class="box" style="margin-top:14px"><h2>Cartes du tour — clique sur une carte pour projeter ses données</h2><div class="cards big">${cols(S).map(d=>`<div class="c col" data-card="${d[0]}">${art(d[0])}<div class="t">${esc(d[1])}</div><div class="b">${esc(d[2])}</div><div class="f"><span class="cost">${eu(d[3])}</span><span>${lk(d,S)?'verrouillée':''}</span></div>${d[7]?`<div class="b cn">🔒 ${esc(d[7])}</div>`:''}${lkm(d,S)}</div>`).join('')}</div></div>${mini}`;
   else if(ph==='col'){const t=tally(),mx=Math.max(0,...Object.values(t).map(x=>x.length));
     main=`<div class="box" style="margin-top:14px"><div class="cards big">`+cols(S).map(d=>{const n=t[d[0]]||[],off=!okc(d,S);
-      return`<div class="c col ${n.length&&n.length===mx&&!off?'on':''} ${off?'off':''}" data-card="${d[0]}">${art(d[0])}<div class="t">${esc(d[1])}</div><div class="b">${esc(d[2])}</div><div class="f"><span class="cost">${eu(d[3])}</span><span><b>${n.length}</b> voix${S.used.includes(d[0])?' · adoptée':''}${lk(d,S)?' · verrouillée':''}</span></div><div class="b who">${n.map(esc).join(', ')}</div></div>`}).join('')+`</div></div>${mini}`}
+      return`<div class="c col ${n.length&&n.length===mx&&!off?'on':''} ${off?'off':''}" data-card="${d[0]}">${art(d[0])}<div class="t">${esc(d[1])}</div><div class="b">${esc(d[2])}</div>${lkm(d,S)}<div class="f"><span class="cost">${eu(d[3])}</span><span><b>${n.length}</b> voix${S.used.includes(d[0])?' · adoptée':''}${lk(d,S)?' · verrouillée':''}</span></div><div class="b who">${n.map(esc).join(', ')}</div></div>`}).join('')+`</div></div>${mini}`}
   else{let side='';
     if(ph==='lobby')side=`<h2>Élèves connectés (${ids.length})</h2>`+st.map(s=>`<span class="pill">${esc(s.name)} · ${n1(s.fp)} t</span>`).join('');
     if(ph==='ind')side=`<h2>Choix individuels</h2><p>${st.filter(s=>s.picks.length).length} / ${st.length} élèves ont validé.</p>`+st.map(s=>`<span class="pill">${s.picks.length?'✔ ':''}${esc(s.name)}</span>`).join('');
-    if(ph==='bilan'||ph==='fin')side=`<h2>Bilan du tour ${S.round}</h2><p>Mesures collectives adoptées :</p>`+(S.ret.length?S.ret.map(c=>`<p>✔ ${esc(find(cols(S),c)[1])} (−${n2(find(cols(S),c)[4]*(S.adopt||1))} t)</p>`).join(''):'<p>Aucune.</p>')+
-      (ph==='fin'?`<p class="big ${a<=TARGET?'win':'lose'}">${a<=TARGET?'La classe atteint 2 t !':'Moyenne de classe : '+n1(a)+' t'}</p><p>${ok} / ${st.length} élèves sous 2 t. ${a<=TARGET&&ok==st.length?'<b class="win">Double victoire !</b>':''}</p>`:'');
+    if(ph==='bilan'||ph==='fin'){const ad=S.adopted||[],by={};ad.forEach(x=>(by[x.r]=by[x.r]||[]).push(x.t));
+      side=`<h2>${ph==='fin'?'Bilan final':'Bilan du tour '+S.round}</h2><p><b>Empreinte actuelle de la classe (${lab(S.hist.length-1)})</b></p>${stackChart([{l:'Classe',v:avgc()},...refCols])}${legend()}<p style="margin-top:10px"><b>Mesures collectives adoptées depuis le début (${ad.length})</b></p>`+(ad.length?Object.keys(by).map(r=>`<p class="who">Manche ${r}</p>`+by[r].map(t=>`<p>✔ ${esc(t)}</p>`).join('')).join(''):'<p>Aucune.</p>')+
+      (ph==='fin'?`<p class="big ${a<=TARGET?'win':'lose'}">${a<=TARGET?'La classe atteint 2 t !':'Moyenne de classe : '+n1(a)+' t'}</p><p>${ok} / ${st.length} élèves sous 2 t. ${a<=TARGET&&ok==st.length?'<b class="win">Double victoire !</b>':''}</p>`:'')}
     main=`<div class="grid"><div class="box"><div id="sh"></div><div class="kpi"><div><small>Moyenne de la classe</small><strong>${n1(a)} t</strong></div><div><small>Élèves sous ${TARGET} t</small><strong>${ok} / ${st.length}</strong></div><div><small>Tour</small><strong>${S.round||'—'} / ${ROUNDS}</strong></div><div><small>Adhésion sociale</small><strong>${Math.round((ph==='lobby'?S.base:S.adopt)*100)} %</strong></div><div><small>Services sociétaux (moy.)</small><strong>${n1(st.length?st.reduce((x,s)=>x+s.pub,0)/st.length:PUB)} t</strong></div></div>${chart(S.hist.length?S.hist:[a],st)}</div><div class="box">${side}</div></div>${evoBox()}`}
   const vc=view&&['pres','col'].includes(ph)&&find(cols(S),view);
-  const modal=vc?`<div class="modal"><div class="imgw">${back(view)}</div><div class="side"><h2>${esc(vc[1])}</h2><p>${esc(vc[2])}</p><p><b>${eu(vc[3])}</b></p>${vc[7]?`<p>🔒 ${esc(vc[7])}</p>`:''}${ph==='col'&&okc(vc,S)?'<p><button id="mv">Valider cette carte</button></p>':''}<p><button class="alt" id="mc" style="color:#fff">Fermer</button></p></div></div>`:'';
+  const modal=vc?`<div class="modal"><div class="imgw">${back(view)}</div><div class="side"><h2>${esc(vc[1])}</h2><p>${esc(vc[2])}</p><p><b>${eu(vc[3])}</b></p>${vc[7]?`<p>🔒 ${esc(vc[7])}</p>`:''}${lkm(vc,S)}${ph==='col'&&okc(vc,S)?'<p><button id="mv">Valider cette carte</button></p>':''}<p><button class="alt" id="mc" style="color:#fff">Fermer</button></p></div></div>`:'';
   troot.innerHTML=bar+main+modal;
   const sh=Q('#sh');if(sh){const sc=scene();sh.replaceWith(sc);const k=stageOf(S);[...sc.querySelectorAll('img')].forEach((e,i)=>e.classList.toggle('on',i===k))}
   Q('#nx').onclick=next;Q('#rs').onclick=()=>{if(TEST){location.reload();return}if(confirm('Effacer la partie en cours ?')){newGame();bus=mkT();bcast()}};
@@ -330,19 +340,19 @@ function mkStudent(root,pre){
       const pv=k=>parseFloat((R('#j_'+k).value||'').replace(',','.')),upd=()=>{R('#jt').textContent=n1(KEYS.reduce((a,k)=>a+(pv(k)||0),0))};root.querySelectorAll('.jc').forEach(x=>x.oninput=upd);
       R('#jb').onclick=()=>{const name=R('#jn').value.trim(),c={};if(!name){alert('Choisis un pseudo.');return}for(const k of KEYS){const v=pv(k);if(!(v>=0&&v<=30)){alert('Indique « '+KL[k]+' » en tonnes (0 si rien).');return}c[k]=r2b(v)}const fp=r2b(KEYS.reduce((a,k)=>a+c[k],0));if(!(fp>=1&&fp<=40)){alert('Le total doit être compris entre 1 et 40 tonnes.');return}me={id:rid(8),name,fp,c};localStorage.setItem('t2-me',JSON.stringify({...me,room}));sendJoin();St()};return}
     if(!P){root.innerHTML='<div class="box" style="padding:0;overflow:hidden"><img src="assets/attente.webp" alt="Connexion à la salle…" style="display:block;width:100%"></div>';return}
-    const mine=P.st[me.id]||{fp:me.fp,c:me.c,picks:[],used:[]},AV=avail(mine),D=DECKS[P.round]||DECKS[1],head=`<div class="bar"><div><b>${esc(me.name)}</b><br><small>Mon empreinte</small> <b>${n1(mine.fp)} t</b><br><small>dont services sociétaux ${n1(mine.pub??me.fp*.18)} t, réductibles seulement par les mesures collectives</small></div><div><small>Classe</small> <b>${n1(P.hist.length?P.hist[P.hist.length-1]:me.fp)} t</b> · <small>objectif ${TARGET} t</small></div></div>`;
+    const mine=P.st[me.id]||{fp:me.fp,c:me.c,picks:[],used:[]},AV=avail(mine),D={...(DECKS[P.round]||DECKS[1]),ind:indOf(P.round)},head=`<div class="bar"><div><b>${esc(me.name)}</b><br><small>Mon empreinte</small> <b>${n1(mine.fp)} t</b><br><small>dont services sociétaux ${n1(mine.pub??me.fp*.18)} t, réductibles seulement par les mesures collectives</small></div><div><small>Classe</small> <b>${n1(P.hist.length?P.hist[P.hist.length-1]:me.fp)} t</b> · <small>objectif ${TARGET} t</small></div></div>`;
     let body='';
     if(P.phase==='lobby'||P.phase==='resume')body='<div class="box" style="padding:0;overflow:hidden"><img src="assets/attente.webp" alt="En attente du début de la partie" style="display:block;width:100%"></div>';
     if(P.phase==='ind'){const spent=sel.reduce((a,c)=>a+find(D.ind,c)[3],0);
       body=`<div class="box"><h2>Mes choix individuels — ${AV-spent} ♥ restants</h2><p class="who">${AV} ♥ ce tour (${HEARTS}${AV>HEARTS?` + ${AV-HEARTS} non dépensés lors des tours précédents`:''}). Les cœurs non dépensés sont reportés.</p><div class="meter"><i style="width:${Math.min(100,spent/AV*100)}%"></i></div><p><button id="ok">Valider mes choix</button> ${(mine.picks.length&&sel.join()===mine.picks.join())?'✔ envoyé':''}</p><div class="cards">`+
       D.ind.map(d=>{const on=sel.includes(d[0]),dead=!d[5]&&mine.used.includes(d[0]),no=!on&&(dead||spent+d[3]>AV);return card(d,'ind',(on?'on ':'')+(no?'off':''),`data-a="tog" data-id="${d[0]}" ${no?'data-off="1"':''}`)}).join('')+`</div></div>`}
-    if(P.phase==='pres')body=`<div class="box"><h2>Les cartes du tour</h2><p class="who">Fais défiler vers la droite pour les parcourir toutes, touche « Voir les détails » pour lire les données.</p></div><div class="car">`+cols(P).map(d=>card(d,'col','',`data-a="info" data-id="${d[0]}"`)).join('')+`</div>`;
+    if(P.phase==='pres')body=`<div class="box"><h2>Les cartes du tour</h2><p class="who">Fais défiler vers la droite pour les parcourir toutes, touche « Voir les détails » pour lire les données.</p></div><div class="car">`+cols(P).map(d=>card(d,'col','',`data-a="info" data-id="${d[0]}"`,'',P)).join('')+`</div>`;
     if(P.phase==='col'){const mv=mine.votes||[],left=P.left;
       body=`<div class="box"><h2>Débat — budget restant ${eu(left)} (sur ${eu(P.budget||BUD0)})</h2><p class="who">Un seul vote : touche la carte que tu soutiens (touche-la de nouveau pour le retirer).</p><div class="cards">`+
       cols(P).map(d=>{const dead=P.used.includes(d[0])||lk(d,P)||(d[3]>left&&!mv.includes(d[0])),t=Object.values(P.st).filter(s=>(s.votes||[]).includes(d[0])).length;
-        return card(d,'col',(mv.includes(d[0])?'on ':'')+(dead?'off':''),`data-a="vote" data-id="${d[0]}" ${dead?'data-off="1"':''}`,` · ${t} voix`)}).join('')+'</div></div>'}
+        return card(d,'col',(mv.includes(d[0])?'on ':'')+(dead?'off':''),`data-a="vote" data-id="${d[0]}" ${dead?'data-off="1"':''}`,` · ${t} voix`,P)}).join('')+'</div></div>'}
     if(P.phase==='bilan'||P.phase==='fin'){
-      const mi=(mine.h||[]).map((c,i)=>({l:lab(i),v:c})),cl=(P.histc||[]).map((c,i)=>({l:lab(i),v:c})),cur=mine.c||split(mine.fp),ca=cl.length?cl[cl.length-1].v:cur;
+      const cur=mine.c||split(mine.fp),mi=withLive((mine.h||[]).map((c,i)=>({l:lab(i),v:c})),cur),ca=avgcX(P),cl=withLive((P.histc||[]).map((c,i)=>({l:lab(i),v:c})),ca);
       body=`<div class="box"><h2>${P.phase==='fin'?'Bilan final':'Bilan du tour '+P.round}</h2><p class="big ${mine.fp<=TARGET?'win':''}">${n1(mine.fp)} t</p><p>${mine.fp<=TARGET?'Tu es sous 2 t !':'Encore '+n1(mine.fp-TARGET)+' t à gagner pour atteindre 2 t.'} · la classe : <b>${n1(P.hist.length?P.hist[P.hist.length-1]:mine.fp)} t</b></p></div>
       <div class="box"><h2>Mon évolution</h2>${stackChart(mi.concat(refCols))}${legend()}</div>
       <div class="box"><h2>L’évolution de la classe</h2>${stackChart(cl.concat(refCols))}${legend()}</div>
@@ -368,7 +378,7 @@ function mkStudent(root,pre){
   });
   // joue au hasard (mode test)
   function auto(){
-    if(!P||!P.st[me.id])return;const mine=P.st[me.id],D=DECKS[P.round]||DECKS[1];
+    if(!P||!P.st[me.id])return;const mine=P.st[me.id],D={...(DECKS[P.round]||DECKS[1]),ind:indOf(P.round)};
     if(P.phase==='ind'){let left=avail(mine);const c=[];[...D.ind].sort(()=>Math.random()-.5).forEach(d=>{if(d[3]<=left&&(d[5]||!mine.used.includes(d[0]))&&Math.random()<.7){c.push(d[0]);left-=d[3]}});sel=c;sb.send({t:'pick',id:me.id,cards:c})}
     if(P.phase==='col'){const c=cols(P).filter(d=>okc(d,P)).sort(()=>Math.random()-.5).slice(0,1);sb.send({t:'vote',id:me.id,cards:c.map(d=>d[0])})}
   }
